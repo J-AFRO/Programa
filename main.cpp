@@ -16,7 +16,7 @@ void skaiciuoti(Mokinys A[], int n, int nd);
 void rezultatai(Mokinys A[], int n);
 int main()
 {
-    int n = 1, nd = 5;
+    int n = 2, nd = 5;
     Mokinys A[n];
     ivestis(A, n, nd);
     skaiciuoti(A, n, nd);
