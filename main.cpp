@@ -64,7 +64,7 @@ void ivestis(Mokinys A[], int n, int nd)
                     continue;
                 }
 
-                if (A[i].ndRez[j] < 1 && A[i].ndRez[j] > 10)
+                if (A[i].ndRez[j] < 1 || A[i].ndRez[j] > 10)
                 {
                     cout << "Klaida! Skaicius per didelis/per mazas. Bandykite dar karta." << endl;
                     continue;
@@ -86,7 +86,7 @@ void ivestis(Mokinys A[], int n, int nd)
                 continue;
             }
 
-            if (A[i].egzRez < 1 && A[i].egzRez > 10)
+            if (A[i].egzRez < 1 || A[i].egzRez > 10)
             {
                 cout << "Klaida! Skaicius per didelis/per mazas. Bandykite dar karta." << endl;
                 continue;
