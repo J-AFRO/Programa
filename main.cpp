@@ -34,7 +34,7 @@ void ivestis(Mokinys A[], int n, int nd)
             cout << "Vardas - ";
             cin >> A[i].vardas;
             if (!tikrinti_zodi(A[i].vardas))
-                cout << "Klaida! Galima naudoti tik raides." << endl;
+                cout << "Klaida! Galima naudoti tik raides. Bandykite dar karta." << endl;
 
         } while (!tikrinti_zodi(A[i].vardas));
 
@@ -43,7 +43,7 @@ void ivestis(Mokinys A[], int n, int nd)
             cout << "Pavarde - ";
             cin >> A[i].pavarde;
             if (!tikrinti_zodi(A[i].pavarde))
-                cout << "Klaida! Galima naudoti tik raides." << endl;
+                cout << "Klaida! Galima naudoti tik raides. Bandykite dar karta." << endl;
 
         } while (!tikrinti_zodi(A[i].pavarde));
 
