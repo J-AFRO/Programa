@@ -100,12 +100,9 @@ void ivestis(Mokinys A[], int n, int nd)
 bool tikrinti_zodi(const string &zodis)
 {
     for (char c : zodis)
-    {
         if (!isalpha(c))
-        {
             return false;
-        }
-    }
+
     return true;
 }
 
