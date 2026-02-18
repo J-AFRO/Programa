@@ -29,13 +29,13 @@ int main()
     int nd;
     vector<Mokinys> A;
 
-    cout << "Iveskite namu darbu skaiciu: ";
+    cout << "Iveskite namu darbu skaiciu - ";
     while (true)
     {
         cin >> nd;
-        if (cin.fail() || nd < 2)
+        if (cin.fail() || nd < 3)
         {
-            cout << "Klaida! Skaicius nuo 2. Bandykite dar karta." << endl;
+            cout << "Klaida! Galima naudoti skaicius > 2. Bandykite dar karta." << endl;
             cin.clear();
             cin.ignore(1000, '\n');
         }
@@ -143,8 +143,8 @@ int main()
 
 void generuoti_random(Mokinys &A, int nd)
 {
-    vector<string> vardai = {"Justas", "Arnas", "Vytas", "Ignas"};
-    vector<string> pavardes = {"Viskevicius", "Lekavicius", "Bartuska", "Malinauskas"};
+    vector<string> vardai = {"Justas", "Arnas", "Vytas", "Ignas", "Kernius", "Martynas", "Dovydas", "Rolandas", "Matas", "Linas"};
+    vector<string> pavardes = {"Viskevicius", "Lekavicius", "Bartuska", "Malinauskas", "Jankus", "Bijauskas", "Andraikenas", "Rinkevicius", "Bujauskas", "Kundzis"};
     A.vardas = vardai[rand() % vardai.size()];
     A.pavarde = pavardes[rand() % pavardes.size()];
     A.ndRez.resize(nd);
