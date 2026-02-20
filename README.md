@@ -1,5 +1,6 @@
 # V0.1
 Programą, kuri nuskaito vartotojų įvedamus reikiamus duomenis: studento vardą, pavardę, namų darbų tarpinius rezultatus ir egzamino rezultatus. Baigus duomenų įvedimą, suskaičiuoja galutinį balą ir juos pateikia į ekraną.
+
 Šioje programos versijoje atsirado galimybė atsitiktinai generuoti duomenis.
 
 
