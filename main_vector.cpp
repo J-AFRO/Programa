@@ -50,7 +50,7 @@ int main()
         cin >> pasirinkimas;
         if (tolower(pasirinkimas) != 't' && tolower(pasirinkimas) != 'n')
         {
-            cout << "Klaida. Pasirinkite t arba n. Bandykite dar karta.";
+            cout << "Klaida. Pasirinkite t arba n. Bandykite dar karta." << endl;
             cin.clear();
             cin.ignore(1000, '\n');
         }
@@ -122,7 +122,18 @@ int main()
         {
             cout << "Ar norite ivesti dar viena mokini? (t/n): ";
             char dar;
-            cin >> dar;
+            while (true)
+            {
+                cin >> dar;
+                if (tolower(dar) != 't' && tolower(dar) != 'n')
+                {
+                    cout << "Klaida. Pasirinkite t arba n. Bandykite dar karta." << endl;
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                }
+                else
+                    break;
+            }
             if (tolower(dar) != 't')
                 break;
         }
@@ -130,7 +141,18 @@ int main()
         {
             cout << "Ar generuoti dar viena mokini? (t/n): ";
             char dar;
-            cin >> dar;
+            while (true)
+            {
+                cin >> dar;
+                if (tolower(dar) != 't' && tolower(dar) != 'n')
+                {
+                    cout << "Klaida. Pasirinkite t arba n. Bandykite dar karta." << endl;
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                }
+                else
+                    break;
+            }
             if (tolower(dar) != 't')
                 break;
         }
