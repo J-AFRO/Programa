@@ -195,6 +195,13 @@ void skaiciuoti(vector<Mokinys> &A, int nd)
 
 void rezultatai(const vector<Mokinys> &A)
 {
+    ofstream fr("rezultatai.txt");
+    if (!fr)
+    {
+        cout << "Nepavyko sukurti rezultatai.txt failo!\n";
+        return;
+    }
+
     cout << left
          << setw(15) << "Vardas"
          << setw(15) << "Pavarde"
@@ -202,6 +209,14 @@ void rezultatai(const vector<Mokinys> &A)
          << setw(20) << "Galutinis (Med.)\n";
 
     cout << string(70, '-') << "\n";
+
+    fr << left
+       << setw(15) << "Vardas"
+       << setw(15) << "Pavarde"
+       << setw(20) << "Galutinis (Vid.)"
+       << setw(20) << "Galutinis (Med.)\n";
+
+    fr << string(70, '-') << "\n";
 
     for (const auto &m : A)
     {
@@ -211,7 +226,17 @@ void rezultatai(const vector<Mokinys> &A)
              << setw(20) << fixed << setprecision(2) << m.galutinisAVG
              << setw(20) << fixed << setprecision(2) << m.galutinisMed
              << "\n";
+
+        fr << left
+           << setw(15) << m.vardas
+           << setw(15) << m.pavarde
+           << setw(20) << fixed << setprecision(2) << m.galutinisAVG
+           << setw(20) << fixed << setprecision(2) << m.galutinisMed
+           << "\n";
     }
 
     cout << string(70, '-') << "\n";
+    fr << string(70, '-') << "\n";
+
+    fr.close();
 }
