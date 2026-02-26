@@ -25,11 +25,12 @@ void skaiciuoti(vector<Mokinys> &A, int nd);
 void rezultatai(const vector<Mokinys> &A);
 void generuoti_random(Mokinys &A, int nd);
 void nuskaityti(vector<Mokinys> &A, int &nd);
+void rikiuoti_1(vector<Mokinys> &A);
+void rikiuoti_2(vector<Mokinys> &A);
 
 int main()
 {
     cin.tie(nullptr);
-
     srand(time(nullptr));
 
     vector<Mokinys> A;
@@ -37,7 +38,18 @@ int main()
 
     char failas;
     cout << "Ar norite nuskaityti duomenis is failo? (t/n): ";
-    cin >> failas;
+    while (true)
+    {
+        cin >> failas;
+        if (tolower(failas) != 't' && tolower(failas) != 'n')
+        {
+            cout << "Klaida. Pasirinkite t arba n. Bandykite dar karta." << endl;
+            cin.clear();
+            cin.ignore(1000, '\n');
+        }
+        else
+            break;
+    }
 
     if (tolower(failas) == 't')
     {
@@ -51,7 +63,7 @@ int main()
             cin >> nd;
             if (cin.fail() || nd < 3)
             {
-                cout << "Klaida! Galima naudoti skaicius > 2. Bandykite dar karta.\n";
+                cout << "Klaida! Galima naudoti skaicius > 2. Bandykite dar karta." << endl;
                 cin.clear();
                 cin.ignore(1000, '\n');
             }
@@ -61,29 +73,72 @@ int main()
 
         char pasirinkimas;
         cout << "Ar norite sugeneruoti rezultatus atsitiktinai? (t/n): ";
-        cin >> pasirinkimas;
-
+        while (true)
+        {
+            cin >> pasirinkimas;
+            if (tolower(pasirinkimas) != 't' && tolower(pasirinkimas) != 'n')
+            {
+                cout << "Klaida. Pasirinkite t arba n. Bandykite dar karta." << endl;
+                cin.clear();
+                cin.ignore(1000, '\n');
+            }
+            else
+                break;
+        }
         while (true)
         {
             Mokinys m;
 
             if (tolower(pasirinkimas) != 't')
             {
-                cout << "Vardas: ";
-                cin >> m.vardas;
+                do
+                {
+                    cout << "Vardas: ";
+                    cin >> m.vardas;
+                    if (m.vardas.empty())
+                        break;
+                } while (!tikrinti_zodi(m.vardas));
+
                 if (m.vardas.empty())
                     break;
 
-                cout << "Pavarde: ";
-                cin >> m.pavarde;
+                do
+                {
+                    cout << "Pavarde: ";
+                    cin >> m.pavarde;
+                } while (!tikrinti_zodi(m.pavarde));
 
                 m.ndRez.resize(nd);
-                cout << "Namu darbu rezultatai:\n";
+                cout << "Namu darbu rezultatai:" << endl;
                 for (int i = 0; i < nd; i++)
-                    cin >> m.ndRez[i];
+                {
+                    while (true)
+                    {
+                        cin >> m.ndRez[i];
+                        if (cin.fail() || m.ndRez[i] < 1 || m.ndRez[i] > 10)
+                        {
+                            cout << "Klaida! Skaicius nuo 1 iki 10. Bandykite dar karta." << endl;
+                            cin.clear();
+                            cin.ignore(1000, '\n');
+                        }
+                        else
+                            break;
+                    }
+                }
 
                 cout << "Egzamino rezultatas: ";
-                cin >> m.egzRez;
+                while (true)
+                {
+                    cin >> m.egzRez;
+                    if (cin.fail() || m.egzRez < 1 || m.egzRez > 10)
+                    {
+                        cout << "Klaida! Skaicius nuo 1 iki 10. Bandykite dar karta." << endl;
+                        cin.clear();
+                        cin.ignore(1000, '\n');
+                    }
+                    else
+                        break;
+                }
             }
             else
             {
@@ -94,13 +149,44 @@ int main()
 
             cout << "Ar prideti dar viena mokini? (t/n): ";
             char dar;
-            cin >> dar;
+            while (true)
+            {
+                cin >> dar;
+                if (tolower(dar) != 't' && tolower(dar) != 'n')
+                {
+                    cout << "Klaida. Pasirinkite t arba n. Bandykite dar karta." << endl;
+                    cin.clear();
+                    cin.ignore(1000, '\n');
+                }
+                else
+                    break;
+            }
             if (tolower(dar) != 't')
                 break;
         }
     }
 
     skaiciuoti(A, nd);
+
+    cout << "Pasirinkite rikiavimo buda:" << endl;
+    cout << "1 - Pagal galutini rezultata (vidurkis), nuo maziausio iki didziausio" << endl;
+    cout << "2 - Pagal galutini rezultata (mediana), nuo didziausio iki maziausio" << endl;
+    int rikiuote;
+    cin >> rikiuote;
+
+    if (rikiuote == 1)
+    {
+        rikiuoti_1(A);
+    }
+    else if (rikiuote == 2)
+    {
+        rikiuoti_2(A);
+    }
+    else
+    {
+        cout << "Pasirinkote neegzistuojama rikiavima. Bus nerikiuota." << endl;
+    }
+
     rezultatai(A);
 
     return 0;
@@ -108,10 +194,10 @@ int main()
 
 void nuskaityti(vector<Mokinys> &A, int &nd)
 {
-    ifstream fd("studentai1000000.txt");
+    ifstream fd("studentai10000.txt");
     if (!fd)
     {
-        cout << "Nepavyko atidaryti failo!\n";
+        cout << "Nepavyko atidaryti failo!" << endl;
         exit(1);
     }
 
@@ -127,8 +213,6 @@ void nuskaityti(vector<Mokinys> &A, int &nd)
         nd = count - 3;
     }
 
-    A.reserve(1000000);
-
     while (true)
     {
         Mokinys m;
@@ -141,7 +225,7 @@ void nuskaityti(vector<Mokinys> &A, int &nd)
 
         fd >> m.egzRez;
 
-        A.push_back(std::move(m));
+        A.push_back(move(m));
     }
 
     fd.close();
@@ -193,12 +277,24 @@ void skaiciuoti(vector<Mokinys> &A, int nd)
     }
 }
 
+void rikiuoti_1(vector<Mokinys> &A)
+{
+    sort(A.begin(), A.end(), [](const Mokinys &a, const Mokinys &b)
+         { return a.galutinisAVG < b.galutinisAVG; });
+}
+
+void rikiuoti_2(vector<Mokinys> &A)
+{
+    sort(A.begin(), A.end(), [](const Mokinys &a, const Mokinys &b)
+         { return a.galutinisMed > b.galutinisMed; });
+}
+
 void rezultatai(const vector<Mokinys> &A)
 {
     ofstream fr("rezultatai.txt");
     if (!fr)
     {
-        cout << "Nepavyko sukurti rezultatai.txt failo!\n";
+        cout << "Nepavyko sukurti rezultatai.txt failo!" << endl;
         return;
     }
 
