@@ -113,15 +113,6 @@ void rezultatai(const vector<Mokinys> &A)
         cout << "Nepavyko sukurti rezultatai.txt failo!" << endl;
         return;
     }
-
-    cout << left
-         << setw(15) << "Vardas"
-         << setw(15) << "Pavarde"
-         << setw(20) << "Galutinis (Vid.)"
-         << setw(20) << "Galutinis (Med.)\n";
-
-    cout << string(70, '-') << "\n";
-
     fr << left
        << setw(15) << "Vardas"
        << setw(15) << "Pavarde"
@@ -132,13 +123,6 @@ void rezultatai(const vector<Mokinys> &A)
 
     for (const auto &m : A)
     {
-        cout << left
-             << setw(15) << m.vardas
-             << setw(15) << m.pavarde
-             << setw(20) << fixed << setprecision(2) << m.galutinisAVG
-             << setw(20) << fixed << setprecision(2) << m.galutinisMed
-             << "\n";
-
         fr << left
            << setw(15) << m.vardas
            << setw(15) << m.pavarde
@@ -147,7 +131,6 @@ void rezultatai(const vector<Mokinys> &A)
            << "\n";
     }
 
-    cout << string(70, '-') << "\n";
     fr << string(70, '-') << "\n";
 
     fr.close();
