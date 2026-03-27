@@ -7,10 +7,38 @@
 #include <ctime>
 #include <fstream>
 #include <sstream>
+
 using namespace std;
-void nuskaityti(vector<Mokinys> &A, int &nd)
+
+void generuoti_faila(const string &failo_pav, int kiekis, int nd)
 {
-    ifstream fd("studentai10000.txt");
+    ofstream fr(failo_pav);
+
+    fr << left << setw(20) << "Vardas"
+       << setw(20) << "Pavarde";
+
+    for (int i = 1; i <= nd; i++)
+        fr << setw(8) << ("ND" + to_string(i));
+
+    fr << setw(8) << "Egz." << endl;
+
+    for (int i = 1; i <= kiekis; i++)
+    {
+        fr << left << setw(20) << ("Vardas" + to_string(i))
+           << setw(20) << ("Pavarde" + to_string(i));
+
+        for (int j = 0; j < nd; j++)
+            fr << setw(8) << (rand() % 10 + 1);
+
+        fr << setw(8) << (rand() % 10 + 1) << endl;
+    }
+
+    fr.close();
+}
+
+void nuskaityti(vector<Mokinys> &A, int &nd, const string &failas)
+{
+    ifstream fd(failas);
     if (!fd)
     {
         cout << "Nepavyko atidaryti failo!" << endl;
@@ -20,14 +48,12 @@ void nuskaityti(vector<Mokinys> &A, int &nd)
     string header;
     getline(fd, header);
 
-    {
-        string tmp;
-        stringstream ss(header);
-        int count = 0;
-        while (ss >> tmp)
-            count++;
-        nd = count - 3;
-    }
+    string tmp;
+    stringstream ss(header);
+    int count = 0;
+    while (ss >> tmp)
+        count++;
+    nd = count - 3;
 
     while (true)
     {
@@ -49,14 +75,8 @@ void nuskaityti(vector<Mokinys> &A, int &nd)
 
 void generuoti_random(Mokinys &A, int nd)
 {
-    vector<string> vardai = {"Justas", "Arnas", "Vytas", "Ignas", "Kernius",
-                             "Martynas", "Dovydas", "Rolandas", "Matas", "Linas"};
-    vector<string> pavardes = {"Viskevicius", "Lekavicius", "Bartuska", "Malinauskas",
-                               "Jankus", "Bijauskas", "Andraikenas", "Rinkevicius",
-                               "Bujauskas", "Kundzis"};
-
-    A.vardas = vardai[rand() % vardai.size()];
-    A.pavarde = pavardes[rand() % pavardes.size()];
+    A.vardas = "Vardas";
+    A.pavarde = "Pavarde";
 
     A.ndRez.resize(nd);
     for (int i = 0; i < nd; i++)
@@ -108,11 +128,7 @@ void rikiuoti_2(vector<Mokinys> &A)
 void rezultatai(const vector<Mokinys> &A)
 {
     ofstream fr("rezultatai.txt");
-    if (!fr)
-    {
-        cout << "Nepavyko sukurti rezultatai.txt failo!" << endl;
-        return;
-    }
+
     fr << left
        << setw(15) << "Vardas"
        << setw(15) << "Pavarde"
@@ -131,7 +147,54 @@ void rezultatai(const vector<Mokinys> &A)
            << "\n";
     }
 
-    fr << string(70, '-') << "\n";
-
     fr.close();
+
+    cout << "Rezultatai - rezultatai.txt";
+}
+
+void skaidyti_studentus(const vector<Mokinys> &A)
+{
+    ofstream geruliai("geruliai.txt");
+    ofstream blogiukai("blogiukai.txt");
+
+    geruliai << left << setw(15) << "Vardas"
+             << setw(15) << "Pavarde"
+             << setw(20) << "Galutinis (Vid.)"
+             << setw(20) << "Galutinis (Med.)\n";
+
+    geruliai << string(70, '-') << "\n";
+
+    blogiukai << left << setw(15) << "Vardas"
+              << setw(15) << "Pavarde"
+              << setw(20) << "Galutinis (Vid.)"
+              << setw(20) << "Galutinis (Med.)\n";
+
+    blogiukai << string(70, '-') << "\n";
+
+    for (const auto &m : A)
+    {
+        if (m.galutinisAVG >= 5.0)
+        {
+            geruliai << left
+                     << setw(15) << m.vardas
+                     << setw(15) << m.pavarde
+                     << setw(20) << fixed << setprecision(2) << m.galutinisAVG
+                     << setw(20) << fixed << setprecision(2) << m.galutinisMed
+                     << "\n";
+        }
+        else
+        {
+            blogiukai << left
+                      << setw(15) << m.vardas
+                      << setw(15) << m.pavarde
+                      << setw(20) << fixed << setprecision(2) << m.galutinisAVG
+                      << setw(20) << fixed << setprecision(2) << m.galutinisMed
+                      << "\n";
+        }
+    }
+
+    geruliai.close();
+    blogiukai.close();
+
+    cout << "Rezultai: geruliai.txt / blogiukai.txt\n";
 }

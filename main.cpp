@@ -2,168 +2,227 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
+#include <fstream>
 #include "mokinys.h"
+
 using namespace std;
+using namespace std::chrono;
 int main()
 {
-    cin.tie(nullptr);
+    ofstream laikas("programos_spartumas.txt");
+    
     srand(time(nullptr));
-
     vector<Mokinys> A;
     int nd = 0;
 
-    char failas;
-    cout << "Ar norite nuskaityti duomenis is failo? (t/n): ";
-    while (true)
+    cout << "Pasirinkite veiksma:\n";
+    cout << "1 - Generuoti faila\n";
+    cout << "2 - Skaityti is failo\n";
+    cout << "3 - Vesti ranka / random\n";
+
+    int pasirinkimas;
+    cin >> pasirinkimas;
+
+    string failo_vardas;
+
+    if (pasirinkimas == 1)
     {
-        cin >> failas;
-        if (tolower(failas) != 't' && tolower(failas) != 'n')
+        int dydis;
+        cout << "Pasirinkite failo dydi:\n";
+        cout << "1 - 1 000\n";
+        cout << "2 - 10 000\n";
+        cout << "3 - 100 000\n";
+        cout << "4 - 1 000 000\n";
+        cout << "5 - 10 000 000\n";
+
+        cin >> dydis;
+
+        int kiekis;
+        switch (dydis)
         {
-            cout << "Klaida. Pasirinkite t arba n. Bandykite dar karta." << endl;
-            cin.clear();
-            cin.ignore(1000, '\n');
-        }
-        else
+        case 1:
+            kiekis = 1000;
             break;
-    }
-
-    if (tolower(failas) == 't')
-    {
-        nuskaityti(A, nd);
-    }
-    else
-    {
-        cout << "Iveskite namu darbu skaiciu - ";
-        while (true)
-        {
-            cin >> nd;
-            if (cin.fail() || nd < 3)
-            {
-                cout << "Klaida! Galima naudoti skaicius > 2. Bandykite dar karta." << endl;
-                cin.clear();
-                cin.ignore(1000, '\n');
-            }
-            else
-                break;
+        case 2:
+            kiekis = 10000;
+            break;
+        case 3:
+            kiekis = 100000;
+            break;
+        case 4:
+            kiekis = 1000000;
+            break;
+        case 5:
+            kiekis = 10000000;
+            break;
+        default:
+            return 0;
         }
 
-        char pasirinkimas;
-        cout << "Ar norite sugeneruoti rezultatus atsitiktinai? (t/n): ";
-        while (true)
+        nd = 15;
+        failo_vardas = "studentai_" + to_string(kiekis) + ".txt";
+        
+        auto generavimas_start = high_resolution_clock::now();
+        generuoti_faila(failo_vardas, kiekis, nd);
+        auto generavimas_end = high_resolution_clock::now();
+        
+        laikas << "Failo generavimas:"
+        << duration<double>(generavimas_end - generavimas_start).count()
+        << " s\n";
+
+        auto nuskaitymas_start = high_resolution_clock::now();        
+        nuskaityti(A, nd, failo_vardas);
+        auto nuskaitymas_end = high_resolution_clock::now();
+
+        laikas << "Failo nuskaitymas:"
+        << duration<double>(nuskaitymas_end - nuskaitymas_start).count()
+        << " s\n";
+    }
+    else if (pasirinkimas == 2)
+    {
+        cout << "Iveskite failo pavadinima: ";
+        cin >> failo_vardas;
+
+        auto nuskaitymas_start = high_resolution_clock::now();  
+        nuskaityti(A, nd, failo_vardas);
+        auto nuskaitymas_end = high_resolution_clock::now();
+
+        laikas << "Failo nuskaitymas:"
+        << duration<double>(nuskaitymas_end - nuskaitymas_start).count()
+        << " s\n";
+
+    }
+    else if (pasirinkimas == 3)
+    {
+        cout << "ND kiekis: ";
+        cin >> nd;
+        if (nd < 3)
         {
-            cin >> pasirinkimas;
-            if (tolower(pasirinkimas) != 't' && tolower(pasirinkimas) != 'n')
-            {
-                cout << "Klaida. Pasirinkite t arba n. Bandykite dar karta." << endl;
-                cin.clear();
-                cin.ignore(1000, '\n');
-            }
-            else
-                break;
+            cerr << "Klaida. Netinkami skaiciai\n";
+            return -1;
         }
+        int random;
+        cout << "Atsitiktinai?\n";
+        cout << "1 - Taip\n";
+        cout << "2 - Ne\n";
+        cin >> random;
+
         while (true)
         {
             Mokinys m;
 
-            if (tolower(pasirinkimas) != 't')
+            if (random == 2)
             {
-                do
+                cout << "Vardas: ";
+                cin >> m.vardas;
+                if (tikrinti_zodi(m.vardas) == false)
                 {
-                    cout << "Vardas: ";
-                    cin >> m.vardas;
-                    if (m.vardas.empty())
-                        break;
-                } while (!tikrinti_zodi(m.vardas));
-
-                if (m.vardas.empty())
-                    break;
-
-                do
+                    cerr << "Klaida. Naudokite tik raides\n";
+                    return -1;
+                }
+                cout << "Pavarde: ";
+                cin >> m.pavarde;
+                if (tikrinti_zodi(m.pavarde) == false)
                 {
-                    cout << "Pavarde: ";
-                    cin >> m.pavarde;
-                } while (!tikrinti_zodi(m.pavarde));
-
+                    cerr << "Klaida. Naudokite tik raides\n";
+                    return -1;
+                }
                 m.ndRez.resize(nd);
-                cout << "Namu darbu rezultatai:" << endl;
+                cout << "Iveskite pazymius:\n";
                 for (int i = 0; i < nd; i++)
                 {
-                    while (true)
+                    cin >> m.ndRez[i];
+                    if (m.ndRez[i] < 1 || m.ndRez[i] > 10)
                     {
-                        cin >> m.ndRez[i];
-                        if (cin.fail() || m.ndRez[i] < 1 || m.ndRez[i] > 10)
-                        {
-                            cout << "Klaida! Skaicius nuo 1 iki 10. Bandykite dar karta." << endl;
-                            cin.clear();
-                            cin.ignore(1000, '\n');
-                        }
-                        else
-                            break;
+                        cerr << "Klaida. Netinkami skaiciai\n";
+                        return -1;
                     }
                 }
-
-                cout << "Egzamino rezultatas: ";
-                while (true)
+                cin >> m.egzRez;
+                if (m.egzRez < 1 || m.egzRez > 10)
                 {
-                    cin >> m.egzRez;
-                    if (cin.fail() || m.egzRez < 1 || m.egzRez > 10)
-                    {
-                        cout << "Klaida! Skaicius nuo 1 iki 10. Bandykite dar karta." << endl;
-                        cin.clear();
-                        cin.ignore(1000, '\n');
-                    }
-                    else
-                        break;
+                    cerr << "Klaida. Netinkami skaiciai\n";
+                    return -1;
                 }
+            }
+            else if (random == 1)
+            {
+                generuoti_random(m, nd);
             }
             else
             {
-                generuoti_random(m, nd);
+                cerr << "Klaida. Nera tokio pasirinkimo\n";
+                return -1;
             }
 
             A.push_back(m);
 
-            cout << "Ar prideti dar viena mokini? (t/n): ";
-            char dar;
-            while (true)
-            {
-                cin >> dar;
-                if (tolower(dar) != 't' && tolower(dar) != 'n')
-                {
-                    cout << "Klaida. Pasirinkite t arba n. Bandykite dar karta." << endl;
-                    cin.clear();
-                    cin.ignore(1000, '\n');
-                }
-                else
-                    break;
-            }
-            if (tolower(dar) != 't')
+            int t;
+            cout << "Prideti dar viena mokini?\n";
+            cout << "1 - Taip\n";
+            cout << "2 - Ne\n";
+            cin >> t;
+            if (t == 2)
                 break;
+            else if (t != 1)
+            {
+                cerr << "Klaida. Nera tokio pasirinkimo\n";
+                return -1;
+            }
         }
+    }
+
+    else
+    {
+        cerr << "Klaida. Nera tokio pasirinkimo\n";
+        return -1;
     }
 
     skaiciuoti(A, nd);
 
-    cout << "Pasirinkite rikiavimo buda:" << endl;
-    cout << "1 - Pagal galutini rezultata (vidurkis), nuo maziausio iki didziausio" << endl;
-    cout << "2 - Pagal galutini rezultata (mediana), nuo didziausio iki maziausio" << endl;
-    int rikiuote;
-    cin >> rikiuote;
+    int r;
+    cout << "Rikiavimas:\n";
+    cout << "1 - pagal vid. didėjancia tvarka\n";
+    cout << "2 - pagal med. mazejancia tvarka\n";
+    cin >> r;
 
-    if (rikiuote == 1)
-    {
+    if (r == 1)
         rikiuoti_1(A);
-    }
-    else if (rikiuote == 2)
-    {
+    else if (r == 2)
         rikiuoti_2(A);
-    }
     else
     {
-        cout << "Pasirinkote neegzistuojama rikiavima. Bus nerikiuota." << endl;
+        cerr << "Klaida. Nera tokio pasirinkimo\n";
+        return -1;
     }
 
-    rezultatai(A);
+    int skaidyti;
+    cout << "Ar skaidyti i geruliai/blogiukai?\n";
+    cout << "1 - Taip\n";
+    cout << "2 - Ne\n";
+    cin >> skaidyti;
+
+    if (skaidyti == 1)
+    {
+    
+        auto skaidyti_start = high_resolution_clock::now();
+        skaidyti_studentus(A);
+        auto skaidyti_end = high_resolution_clock::now();
+        
+        laikas << "Mokiniu skaidymas ir isvedimas:"
+            << duration<double>(skaidyti_end - skaidyti_start).count()
+            << " s\n";
+    }
+    else if (skaidyti == 2)
+        rezultatai(A);
+    else
+    {
+        cerr << "Klaida. Nera tokio pasirinkimo\n";
+        return -1;
+    }
+
+    laikas.close();
 
     return 0;
 }
